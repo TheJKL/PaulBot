@@ -1,2 +1,2 @@
 # PaulBot
-A bot for pictures of Paul the cat.
+A discord bot for pictures of Paul the cat.
