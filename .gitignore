@@ -1,3 +1,7 @@
+#Project Specific Files
+oauth.txt
+
+#Python Specific Files
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
