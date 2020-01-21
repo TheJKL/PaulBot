@@ -1,5 +1,5 @@
 #Project Specific Files
-oauth.txt
+.env
 
 #Python Specific Files
 # Byte-compiled / optimized / DLL files
