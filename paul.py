@@ -16,7 +16,7 @@ async def on_ready():
 async def meow(ctx):
     await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
 
-@bot.command(name = "embed")#embed message test
+#@bot.command(name = "embed")#embed message test (uncomment line to reenable)
 async def embedTest(ctx):
     embed = discord.Embed(title = "Test", description = "A test embed that will eventually be used for statistics.", color = 0x672aff)
     embed.add_field(name = "Field 1", value = 1337, inline = False)
@@ -24,5 +24,10 @@ async def embedTest(ctx):
     embed.add_field(name = "Field 3", value = "Swag")
     embed.set_image(url = "https://cdn.discordapp.com/attachments/522136892448178206/667924013967867934/image0.jpg")
     await ctx.send(embed = embed)
+
+@bot.command(name = "pet")
+async def petCat(ctx):
+    img = discord.File("./Images/image0.jpg")
+    await ctx.send(file = img)
 
 bot.run(token)
