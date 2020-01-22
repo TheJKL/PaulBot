@@ -1,14 +1,19 @@
 import os
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix=";;")
 
-@client.event
+@bot.event
 async def on_ready():
-    print("{user} has connected to Discord!".format(user = client.user))
+    print(f"{bot.user.name} Initialized and connected to Discord.")
 
-client.run(token)
+@bot.command(name = "meow")
+async def meow(ctx):
+    await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
+
+bot.run(token)
