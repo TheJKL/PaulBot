@@ -5,9 +5,11 @@ ___Commands___
 
 **Meow :**
 Replies with a text message, the message is currently static however in future(sometime in v0.2) will be random from a list.
+
 **Pet :**
 Replies with a random image of Paul from the `./Images` folder
-**Command Prefix**
+
+**Command Prefix :**
 Currently this is set to `;;` by default. 
 
 ___Setup___
