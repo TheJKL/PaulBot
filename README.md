@@ -20,4 +20,6 @@ The bot requires a discord Oauth token which is stored in a file called `.env` i
 
 Where [OAuth Token] is a discord bot’s OAuth token.
 
-
+**Python Libraries**
+-discord.py
+-python_dotenv
