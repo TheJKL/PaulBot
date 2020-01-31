@@ -25,3 +25,7 @@ Where [OAuth Token] is a discord bot’s OAuth token.
 -discord.py
 
 -python_dotenv
+
+___Additional Notes___
+
+`debug.log` will be created upon starting the bot, it logs all actions done by the bot and is not cleared.
