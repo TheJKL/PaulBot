@@ -1,7 +1,7 @@
 # PaulBot
 *A discord bot for pictures of Paul the cat.*
 
-___Commands___
+## Commands
 
 **Meow :**
 Replies with a text message, the message is currently static however in future(sometime in v0.2) will be random from a list.
@@ -9,10 +9,10 @@ Replies with a text message, the message is currently static however in future(s
 **Pet :**
 Replies with a random image of Paul from the `./Images` folder
 
-**Command Prefix :**
+### Command Prefix :
 Currently this is set to `;;` by default. 
 
-___Setup___
+## Setup
 
 The bot requires a discord Oauth token which is stored in a file called `.env` in the program directory, this file is not included in this repo and must be setup for the bot to work. The contents of the file should be:
 
@@ -20,8 +20,12 @@ The bot requires a discord Oauth token which is stored in a file called `.env` i
 
 Where [OAuth Token] is a discord bot’s OAuth token.
 
-**Python Libraries**
+### Python Libraries
 
 -discord.py
 
 -python_dotenv
+
+## Additional Notes
+
+`debug.log` will be created upon starting the bot, it logs all actions done by the bot and is not cleared.
