@@ -7,7 +7,11 @@ from discord.ext import commands
 
 from dotenv import load_dotenv
 
-logging.basicConfig(filename="debug.log",level=logging.DEBUG)
+import time
+
+timestr = time.strftime("%Y%m%d-%H%M%S")
+logging.basicConfig(filename=f"Logs/debug-{timestr}.log",level=logging.DEBUG)
+
 logging.info("Log Start")
 
 load_dotenv()
