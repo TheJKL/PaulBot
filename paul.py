@@ -15,11 +15,15 @@ logging.info("Log Start")
 #oauth
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')#load Oauth
-#config
+#config load
 if "config.yaml" not in os.listdir("./"):
     os.system("cp config.defaults config.yaml")
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
+#config init
+imgParentDir = config["imageFolder"]
+imgChildDirs = config["imageSubfolders"]
+petpetpetDir = config["lotteryFolder"]
 bot = commands.Bot(command_prefix=config["commandPrefix"])
 
 @bot.event
@@ -42,24 +46,25 @@ async def embedTest(ctx):
     await ctx.send(embed = embed)
 
 @bot.command(name = "pet")#sends random image of paul
-async def petCat(ctx):
+async def petCat(ctx, cat = "Paul", numImg = 1):#TODO sanatize input and check that folder is present in images dir(this may make the sanitization redundant)
     logging.info("Pet Command")
-    imgs = os.listdir("./Images/Paul")#list of image files in the Paul folder
-    #print(imgs)#debug
-    img = discord.File(f"./Images/Paul/{random.choice(imgs)}")
+    imgs = os.listdir(f"{imgParentDir}/{cat}")#list of image files in the Paul folder
+    img = discord.File(f"{imgParentDir}/{cat}/{random.choice(imgs)}")
     await ctx.send(file = img)
 
 @bot.command(name = "petpetpet")#paul lottery command 
-async def petpetpet(ctx,numImg = 3):#TODO add ability to choose a cat (will grab from that cats directory rather then ./petpetpet) 
+async def petpetpet(ctx, numImg = 3, cat = ""):#TODO add ability to choose a cat (will grab from that cats directory rather then ./petpetpet) 
     if numImg > 10:
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
-    
+    imgDir = petpetpet
+    if cat:
+        imgDir = cat
     logging.info(f"PetPetPet Command, NumImg = {numImg}")
-    imgs = os.listdir("./Images/petpetpet")
+    imgs = os.listdir(f"{imgParentDir}/{imgDir}")
     img = []
     for _ in range(numImg):#chooses images to send
-        image = discord.File(f"./Images/petpetpet/{random.choice(imgs)}")
+        image = discord.File(f"{imgParentDir}/{imgDir}/{random.choice(imgs)}")
         img.append(image)
         await ctx.send(file = image)
 
