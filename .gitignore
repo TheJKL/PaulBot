@@ -1,6 +1,7 @@
 #Project Specific Files
 .env
 Images/*
+config.yaml
 
 #Python Specific Files
 # Byte-compiled / optimized / DLL files

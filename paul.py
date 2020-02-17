@@ -1,23 +1,26 @@
 import os
 import random
 import logging
-
+import yaml
 import discord
 from discord.ext import commands
-
 from dotenv import load_dotenv
-
 import time
 
+#init
+#logging
 timestr = time.strftime("%Y%m%d-%H%M%S")
 logging.basicConfig(filename=f"Logs/debug-{timestr}.log",level=logging.DEBUG)
-
 logging.info("Log Start")
-
+#oauth
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')#load Oauth
-
-bot = commands.Bot(command_prefix=";;")
+#config
+if "config.yaml" not in os.listdir("./"):
+    os.system("cp config.defaults config.yaml")
+with open("config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+bot = commands.Bot(command_prefix=config["commandPrefix"])
 
 @bot.event
 async def on_ready():#confirms init
@@ -47,7 +50,7 @@ async def petCat(ctx):
     await ctx.send(file = img)
 
 @bot.command(name = "petpetpet")#paul lottery command 
-async def petpetpet(ctx,numImg = 3):
+async def petpetpet(ctx,numImg = 3):#TODO add ability to choose a cat (will grab from that cats directory rather then ./petpetpet) 
     if numImg > 10:
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
