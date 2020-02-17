@@ -46,4 +46,25 @@ async def petCat(ctx):
     img = discord.File(f"./Images/Paul/{random.choice(imgs)}")
     await ctx.send(file = img)
 
+@bot.command(name = "petpetpet")#paul lottery command 
+async def petpetpet(ctx,numImg = 3):
+    if numImg > 10:
+        numImg = 3
+        await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
+    
+    logging.info(f"PetPetPet Command, NumImg = {numImg}")
+    imgs = os.listdir("./Images/petpetpet")
+    img = []
+    for _ in range(numImg):#chooses images to send
+        image = discord.File(f"./Images/petpetpet/{random.choice(imgs)}")
+        img.append(image)
+        await ctx.send(file = image)
+
+    embed = discord.Embed(description = "", color = 0x672aff)
+    if all(image == img[0] for image in img):#TODO add responses for two of a kind (or some percantage threshhold)
+        embed.add_field(name  = "PetPetPet!", value = "**YOU WON!!!**")
+    else:
+        embed.add_field(name  = "PetPetPet!", value = "**You Lost!**")
+    await ctx.send(embed = embed)
+
 bot.run(token)
