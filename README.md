@@ -28,4 +28,4 @@ Where [OAuth Token] is a discord bot’s OAuth token.
 
 ## Additional Notes
 
-A `debug-[date]-[time].log` file will be created on each startup of the bot in the `./Images` directory. The date time format is `yearMonthDay-hourMinuteSecond`.
+A `debug-[date]-[time].log` file will be created on each startup of the bot in the `./Logs` directory. The date time format is `yearMonthDay-hourMinuteSecond`.
