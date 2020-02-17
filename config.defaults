@@ -1,1 +1,6 @@
 commandPrefix: "!"
+imageFolder: "./Images"
+imageSubfolders: 
+  - Paul
+lotteryFolder: petpetpet
+databaseAddress: localhost
