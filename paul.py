@@ -64,8 +64,9 @@ async def petpetpet(ctx, numImg = 3, cat = ""):#TODO add ability to choose a cat
     imgs = os.listdir(f"{imgParentDir}/{imgDir}")
     img = []
     for _ in range(numImg):#chooses images to send
-        image = discord.File(f"{imgParentDir}/{imgDir}/{random.choice(imgs)}")
-        img.append(image)
+        rand = random.choice(imgs)
+        image = discord.File(f"{imgParentDir}/{imgDir}/{rand}")
+        img.append(str(rand))
         await ctx.send(file = image)
 
     embed = discord.Embed(description = "", color = 0x672aff)
