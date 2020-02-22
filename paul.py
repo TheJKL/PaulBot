@@ -7,6 +7,8 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import time
 
+version = "0.2pre1-dev"
+
 #init
 #logging
 timestr = time.strftime("%Y%m%d-%H%M%S")
