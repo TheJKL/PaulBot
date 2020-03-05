@@ -6,6 +6,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import time
+import pymongo
 
 version = "0.2pre1-dev"
 
@@ -26,8 +27,14 @@ with open("config.yaml") as f:
 imgParentDir = config["imageFolder"]
 imgChildDirs = config["imageSubfolders"]
 petpetpetDir = config["lotteryFolder"]
+dbAddr = config["databaseAddress"]
 bot = commands.Bot(command_prefix=config["commandPrefix"])
-
+#mongo init
+client = pymongo.MongoClient(f"mongodb://{dbAddr}/")
+db = client.paulDB
+totals = db.totals
+settings = db.settings
+users = db.users
 @bot.event
 async def on_ready():#confirms init
     print(f"{bot.user.name} Initialized and connected to Discord.")
@@ -55,7 +62,7 @@ async def petCat(ctx, cat = "Paul", numImg = 1):#TODO sanatize input and check t
     await ctx.send(file = img)
 
 @bot.command(name = "petpetpet")#paul lottery command 
-async def petpetpet(ctx, numImg = 3, cat = ""):#TODO add ability to choose a cat (will grab from that cats directory rather then ./petpetpet) 
+async def petpetpet(ctx, numImg = 3, cat = ""):
     if numImg > 10:
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
@@ -77,5 +84,12 @@ async def petpetpet(ctx, numImg = 3, cat = ""):#TODO add ability to choose a cat
     else:
         embed.add_field(name  = "PetPetPet!", value = "**You Lost!**")
     await ctx.send(embed = embed)
+
+def createUser(uuid):#TODO check if user exists before adding
+    users.insert_one({
+        "uuid" : str(uuid),
+        "food" : 10,
+        "totals" : []
+        })
 
 bot.run(token)
