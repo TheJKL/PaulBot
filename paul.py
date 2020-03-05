@@ -9,7 +9,7 @@ import time
 import pymongo
 
 version = "0.2pre1-dev"
-
+#TODO docstrigs
 #init
 #logging
 timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -29,6 +29,7 @@ imgChildDirs = config["imageSubfolders"]
 petpetpetDir = config["lotteryFolder"]
 dbAddr = config["databaseAddress"]
 bot = commands.Bot(command_prefix=config["commandPrefix"])
+defaultCat = config["defaultCat"]
 #mongo init
 client = pymongo.MongoClient(f"mongodb://{dbAddr}/")
 db = client.paulDB
@@ -55,23 +56,33 @@ async def embedTest(ctx):
     await ctx.send(embed = embed)
 
 @bot.command(name = "pet")#sends random image of paul
-async def petCat(ctx, cat = "Paul", numImg = 1):#TODO sanatize input and check that folder is present in images dir(this may make the sanitization redundant)
+async def petCat(ctx, cat = "", numImg = 1):
     logging.info("Pet Command")
+
+    if cat.capitalize() not in imgChildDirs:
+        cat = defaultCat
+    else:
+        cat = cat.capitalize()
+
     imgs = os.listdir(f"{imgParentDir}/{cat}")#list of image files in the Paul folder
     img = discord.File(f"{imgParentDir}/{cat}/{random.choice(imgs)}")
     await ctx.send(file = img)
 
 @bot.command(name = "petpetpet")#paul lottery command 
 async def petpetpet(ctx, numImg = 3, cat = ""):
-    if numImg > 10:
+    if numImg > 10:#limit petpetpet images to 10 - 1 per command call
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
-    imgDir = petpetpet
-    if cat:
-        imgDir = cat
+    
+    if cat.capitalize() not in imgChildDirs:
+        imgDir = petpetpet
+    else:
+        imgDir = cat.capitalize()
+    
     logging.info(f"PetPetPet Command, NumImg = {numImg}")
     imgs = os.listdir(f"{imgParentDir}/{imgDir}")
     img = []
+
     for _ in range(numImg):#chooses images to send
         rand = random.choice(imgs)
         image = discord.File(f"{imgParentDir}/{imgDir}/{rand}")
@@ -85,11 +96,12 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
         embed.add_field(name  = "PetPetPet!", value = "**You Lost!**")
     await ctx.send(embed = embed)
 
-def createUser(uuid):#TODO check if user exists before adding
-    users.insert_one({
-        "uuid" : str(uuid),
-        "food" : 10,
-        "totals" : []
-        })
+def createUser(uuid):
+    if not users.count_documents({"uuid":uuid}):
+        users.insert_one({
+            "uuid" : uuid,
+            "food" : 10,
+            "totals" : []
+            })
 
 bot.run(token)
