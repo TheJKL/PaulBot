@@ -99,11 +99,18 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
 
 @bot.command(name = "feed")
 async def feed(ctx, cat = "", numFood = 1):
+    numFood = abs(numFood)
     if cat.capitalize() not in imgChildDirs:
         cat = defaultCat
     else:
         cat = cat.capitalize()
-    await ctx.send("Nom"*numFood)
+
+    if numFood < 100:
+        await ctx.send("Nom"*numFood)
+    else:
+        await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
+
+    
 
 def createUser(uuid):
     if not users.count_documents({"uuid":uuid}):
@@ -112,5 +119,6 @@ def createUser(uuid):
             "food" : 10,
             "totals" : []
             })
+
 
 bot.run(token)
