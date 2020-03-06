@@ -19,8 +19,8 @@ logging.info("Log Start")
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')#load Oauth
 #config load
-if "config.yaml" not in os.listdir("./"):
-    os.system("cp config.defaults config.yaml")
+if "config.yaml" not in os.listdir("./"):#check to see if a config file exists
+    os.system("cp config.defaults config.yaml")#create config from template (if it doesnt exist)
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 #config init
@@ -36,6 +36,7 @@ db = client.paulDB
 totals = db.totals
 settings = db.settings
 users = db.users
+
 @bot.event
 async def on_ready():#confirms init
     print(f"{bot.user.name} Initialized and connected to Discord.")
@@ -46,8 +47,8 @@ async def meow(ctx):
     logging.info("Meow command")
     await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
 
-#@bot.command(name = "embed")#embed message test (uncomment line to reenable)
-async def embedTest(ctx):
+@bot.command(name = "info")#TODO Info command
+async def info(ctx,user):
     embed = discord.Embed(title = "Test", description = "A test embed that will eventually be used for statistics.", color = 0x672aff)
     embed.add_field(name = "Field 1", value = 1337, inline = False)
     embed.add_field(name = "Field 2", value = "YOLO!")
@@ -95,6 +96,14 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
     else:
         embed.add_field(name  = "PetPetPet!", value = "**You Lost!**")
     await ctx.send(embed = embed)
+
+@bot.command(name = "feed")
+async def feed(ctx, cat = "", numFood = 1):
+    if cat.capitalize() not in imgChildDirs:
+        cat = defaultCat
+    else:
+        cat = cat.capitalize()
+    await ctx.send("Nom"*numFood)
 
 def createUser(uuid):
     if not users.count_documents({"uuid":uuid}):
