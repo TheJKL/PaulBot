@@ -103,20 +103,29 @@ async def feed(ctx, cat = "", numFood = 1):
         cat = defaultCat
     else:
         cat = cat.capitalize()
-
-    if numFood < 100:
-        await ctx.send("Nom"*numFood)
+    user = db.users.find_one({"uuid":ctx.author.id})
+    if not user:
+        createUser(ctx.author.id)
+        user = db.users.find_one({"uuid":ctx.author.id})
+    
+    if not user["food"] < numFood:
+        if numFood < 100:
+            await ctx.send("Nom"*numFood)
+        else:
+            await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
+        db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
+        db.users.update_one({"uuid":"totals"},{"$inc":{f"feed.{cat}":1}})#increment total feed command executes
+        db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
+        db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.feed.{cat}":1}})
     else:
-        await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
-
-    db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})
+        await ctx.send("MEOWWWWW   *Translation*: **You don't have that much food.**")
 
 def createUser(uuid):
     if not users.count_documents({"uuid":uuid}):
         users.insert_one({
             "uuid" : uuid,
             "food" : 10,
-            "totals" : []
+            "totals" : {}
             })
 
 
