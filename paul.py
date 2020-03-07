@@ -98,7 +98,7 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
 
 @bot.command(name = "feed")
 async def feed(ctx, cat = "", numFood = 1):
-    numFood = abs(numFood)
+    numFood = int(abs(numFood))
     if cat.capitalize() not in imgChildDirs:
         cat = defaultCat
     else:
@@ -109,7 +109,7 @@ async def feed(ctx, cat = "", numFood = 1):
     else:
         await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
 
-    
+    db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})
 
 def createUser(uuid):
     if not users.count_documents({"uuid":uuid}):
