@@ -33,7 +33,6 @@ defaultCat = config["defaultCat"]
 #mongo init
 client = pymongo.MongoClient(f"mongodb://{dbAddr}/")
 db = client.paulDB
-totals = db.totals
 settings = db.settings
 users = db.users
 
@@ -48,7 +47,7 @@ async def meow(ctx):
     await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
 
 @bot.command(name = "info")#TODO Info command
-async def info(ctx,user):
+async def info(ctx,user = ""):
     embed = discord.Embed(title = "Test", description = "A test embed that will eventually be used for statistics.", color = 0x672aff)
     embed.add_field(name = "Field 1", value = 1337, inline = False)
     embed.add_field(name = "Field 2", value = "YOLO!")
