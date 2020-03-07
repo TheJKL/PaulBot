@@ -104,7 +104,7 @@ async def feed(ctx, cat = "", numFood = 1):
     else:
         cat = cat.capitalize()
     user = db.users.find_one({"uuid":ctx.author.id})
-    if not user:
+    if not user:#check if the user is in the DB
         createUser(ctx.author.id)
         user = db.users.find_one({"uuid":ctx.author.id})
     
@@ -116,7 +116,7 @@ async def feed(ctx, cat = "", numFood = 1):
         db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
         db.users.update_one({"uuid":"totals"},{"$inc":{f"feed.{cat}":1}})#increment total feed command executes
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
-        db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.feed.{cat}":1}})
+        db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.feed.{cat}":1}})#increment users total command execs
     else:
         await ctx.send("MEOWWWWW   *Translation*: **You don't have that much food.**")
 
