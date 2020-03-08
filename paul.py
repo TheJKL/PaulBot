@@ -96,52 +96,46 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
     await ctx.send(embed = embed)
     iterateCmd(ctx,"petpetpet",cat)
 
-@bot.command(name = "feed")
+@bot.command(name = "feed")#feeds a cat an ammount of food
 async def feed(ctx, cat = "", numFood = 1):
-    numFood = int(abs(numFood))
-    if cat.capitalize() not in imgChildDirs:
-        cat = defaultCat
-    else:
-        cat = cat.capitalize()
+    numFood = int(abs(numFood))#make sure the amount of food is a positive integer value
+    cat = checkCat(cat)
+    createUser(ctx.author.id)
     user = db.users.find_one({"uuid":ctx.author.id})
-    if not user:#check if the user is in the DB
-        createUser(ctx.author.id)
-        user = db.users.find_one({"uuid":ctx.author.id})
     logging.info(f"feed command, cat = {cat}, numFood = {numFood}")
-    if not user["food"] < numFood:
-        if numFood < 100:
+    if not user["food"] < numFood:#checks if user has the amount of food they want to feed the cat
+        if numFood < 100:#Nom limiter
             await ctx.send("Nom"*numFood)
         else:
             await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
         
         db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
-        db.users.update_one({"uuid":"totals"},{"$inc":{f"feed.{cat}":1}})#increment total feed command executes
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
-        db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.feed.{cat}":1}})#increment users total command execs
     else:
         await ctx.send("MEOWWWWW   *Translation*: **You don't have that much food.**")
+    iterateCmd(ctx,"feed",cat)
 
-def createUser(uuid):
-    if not users.count_documents({"uuid":uuid}):
+def createUser(uuid):#creates a doc for a specified uuid
+    if not users.count_documents({"uuid":uuid}):#if the user exists a user wont be created
         users.insert_one({
             "uuid" : uuid,
             "food" : 10,
             "totals" : {}
             })
 
-async def sendImage(ctx,img,cat):
+async def sendImage(ctx,img,cat):#sends the specified image and iterates the totals for sent images
     await ctx.send(file = img)
     db.users.update_one({"uuid":"totals"},{"$inc":{f"sentImg.{cat}":1}})
 
-def iterateCmd(ctx,cmd,cat = defaultCat):
+def iterateCmd(ctx,cmd,cat = defaultCat):#iterates the command in totals and for specific users
     db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.{cmd}.{cat}":1}})
     db.users.update_one({"uuid":"totals"},{"$inc":{f"{cmd}.{cat}":1}})
 
-def checkCat(cat):
+def checkCat(cat):#checks if the cat is part of approved cats
     if cat.capitalize() not in imgChildDirs:
-        cat = defaultCat
+        cat = defaultCat#returns default cat if it isnt
     else:
-        cat = cat.capitalize()
+        cat = cat.capitalize()#returns standard cat if it is
     return cat
 
 bot.run(token)
