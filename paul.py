@@ -79,7 +79,7 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
     else:
         imgDir = cat.capitalize()
     
-    logging.info(f"PetPetPet Command, NumImg = {numImg}")
+    logging.info(f"PetPetPet Command, NumImg = {numImg}, cat = {cat}")
     imgs = os.listdir(f"{imgParentDir}/{imgDir}")
     img = []
 
@@ -107,7 +107,7 @@ async def feed(ctx, cat = "", numFood = 1):
     if not user:#check if the user is in the DB
         createUser(ctx.author.id)
         user = db.users.find_one({"uuid":ctx.author.id})
-    
+    logging.info(f"feed command, cat = {cat}, numFood = {numFood}")
     if not user["food"] < numFood:
         if numFood < 100:
             await ctx.send("Nom"*numFood)
@@ -127,6 +127,10 @@ def createUser(uuid):
             "food" : 10,
             "totals" : {}
             })
+
+def sendImage(ctx,img,cat):
+    await ctx.send(file = img)
+    db.users.update_one({"uuid":"totals"},{"$inc":{f"sentImg.{cat}":1}})
 
 
 bot.run(token)
