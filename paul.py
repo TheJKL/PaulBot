@@ -111,6 +111,7 @@ async def feed(ctx, cat = "", numFood = 1):
         
         db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
+        db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.food.{cat}":numFood}})#track how much food a user has fed
     else:
         await ctx.send("MEOWWWWW   *Translation*: **You don't have that much food.**")
     iterateCmd(ctx,"feed",cat)
