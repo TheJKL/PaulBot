@@ -64,7 +64,7 @@ async def petCat(ctx, cat = "", numImg = 1):
 
     imgs = os.listdir(f"{imgParentDir}/{cat}")#list of image files in the Paul folder
     img = discord.File(f"{imgParentDir}/{cat}/{random.choice(imgs)}")
-    await ctx.send(file = img)
+    await sendImage(ctx,img,cat)
     iterateCmd(ctx,"pet",cat)
 
 @bot.command(name = "petpetpet")#paul lottery command 
@@ -86,7 +86,7 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
         rand = random.choice(imgs)
         image = discord.File(f"{imgParentDir}/{cat}/{rand}")
         img.append(str(rand))
-        await ctx.send(file = image)
+        await sendImage(ctx,image,cat)
 
     embed = discord.Embed(description = "", color = 0x672aff)
     if all(image == img[0] for image in img):#TODO add responses for two of a kind (or some percantage threshhold)
