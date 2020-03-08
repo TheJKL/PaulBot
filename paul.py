@@ -45,6 +45,7 @@ async def on_ready():#confirms init
 async def meow(ctx):
     logging.info("Meow command")
     await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
+    iterateCmd(ctx, "meow")
 
 @bot.command(name = "info")#TODO Info command
 async def info(ctx,user = ""):
@@ -59,14 +60,12 @@ async def info(ctx,user = ""):
 async def petCat(ctx, cat = "", numImg = 1):
     logging.info("Pet Command")
 
-    if cat.capitalize() not in imgChildDirs:
-        cat = defaultCat
-    else:
-        cat = cat.capitalize()
+    cat = checkCat(cat)
 
     imgs = os.listdir(f"{imgParentDir}/{cat}")#list of image files in the Paul folder
     img = discord.File(f"{imgParentDir}/{cat}/{random.choice(imgs)}")
     await ctx.send(file = img)
+    iterateCmd(ctx,"pet",cat)
 
 @bot.command(name = "petpetpet")#paul lottery command 
 async def petpetpet(ctx, numImg = 3, cat = ""):
@@ -74,18 +73,18 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
     
-    if cat.capitalize() not in imgChildDirs:
-        imgDir = petpetpet
-    else:
-        imgDir = cat.capitalize()
+    cat = checkCat(cat)
     
     logging.info(f"PetPetPet Command, NumImg = {numImg}, cat = {cat}")
-    imgs = os.listdir(f"{imgParentDir}/{imgDir}")
+    imgDir = os.listdir(f"{imgParentDir}/{cat}")
+    imgs = []
+    for _ in range(20):
+        imgs.append(random.choice(imgDir))
     img = []
 
     for _ in range(numImg):#chooses images to send
         rand = random.choice(imgs)
-        image = discord.File(f"{imgParentDir}/{imgDir}/{rand}")
+        image = discord.File(f"{imgParentDir}/{cat}/{rand}")
         img.append(str(rand))
         await ctx.send(file = image)
 
@@ -95,6 +94,7 @@ async def petpetpet(ctx, numImg = 3, cat = ""):
     else:
         embed.add_field(name  = "PetPetPet!", value = "**You Lost!**")
     await ctx.send(embed = embed)
+    iterateCmd(ctx,"petpetpet",cat)
 
 @bot.command(name = "feed")
 async def feed(ctx, cat = "", numFood = 1):
@@ -113,6 +113,7 @@ async def feed(ctx, cat = "", numFood = 1):
             await ctx.send("Nom"*numFood)
         else:
             await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
+        
         db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
         db.users.update_one({"uuid":"totals"},{"$inc":{f"feed.{cat}":1}})#increment total feed command executes
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
@@ -128,9 +129,19 @@ def createUser(uuid):
             "totals" : {}
             })
 
-def sendImage(ctx,img,cat):
+async def sendImage(ctx,img,cat):
     await ctx.send(file = img)
     db.users.update_one({"uuid":"totals"},{"$inc":{f"sentImg.{cat}":1}})
 
+def iterateCmd(ctx,cmd,cat = defaultCat):
+    db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.{cmd}.{cat}":1}})
+    db.users.update_one({"uuid":"totals"},{"$inc":{f"{cmd}.{cat}":1}})
+
+def checkCat(cat):
+    if cat.capitalize() not in imgChildDirs:
+        cat = defaultCat
+    else:
+        cat = cat.capitalize()
+    return cat
 
 bot.run(token)
