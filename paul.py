@@ -43,6 +43,7 @@ async def on_ready():#confirms init
 
 @bot.command(name = "meow")#sends gib food
 async def meow(ctx):
+    createUser(ctx.author.id)
     logging.info("Meow command")
     await ctx.send("MEEEEEEOOOOOOWWWW!!!!!!!   *Translation*: **GIB FOOD!**")
     iterateCmd(ctx, "meow")
@@ -58,6 +59,7 @@ async def info(ctx,user = ""):
 
 @bot.command(name = "pet")#sends random image of paul
 async def petCat(ctx, cat = "", numImg = 1):
+    createUser(ctx.author.id)
     logging.info("Pet Command")
 
     cat = checkCat(cat)
@@ -69,6 +71,7 @@ async def petCat(ctx, cat = "", numImg = 1):
 
 @bot.command(name = "petpetpet")#paul lottery command 
 async def petpetpet(ctx, numImg = 3, cat = ""):
+    createUser(ctx.author.id)
     if numImg > 10:#limit petpetpet images to 10 - 1 per command call
         numImg = 3
         await ctx.send("HISSSSSS!!!   *Translation*: **!!ERROR CUTENESS OVERLOAD!!**")
