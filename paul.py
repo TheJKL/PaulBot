@@ -7,6 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import time
 import pymongo
+import re
 
 version = "0.2pre1-dev"
 #TODO docstrigs
@@ -51,10 +52,18 @@ async def meow(ctx):
 @bot.command(name = "info")#TODO Info command
 async def info(ctx,user = ""):
     embed = discord.Embed(title = "Test", description = "A test embed that will eventually be used for statistics.", color = 0x672aff)
-    embed.add_field(name = "Field 1", value = 1337, inline = False)
-    embed.add_field(name = "Field 2", value = "YOLO!")
-    embed.add_field(name = "Field 3", value = "Swag")
-    embed.set_image(url = "https://cdn.discordapp.com/attachments/522136892448178206/667924013967867934/image0.jpg")
+    embed.set_thumbnail(url = "https://i.imgur.com/hPmQF6m.jpg")
+    embed.set_author(name = "PaulBot",url = "https://github.com/TheJKL/PaulBot",icon_url = "https://i.imgur.com/hPmQF6m.jpg")
+    embed.set_footer(text = f"paulBot v{version} | https://github.com/TheJKL/PaulBot", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png")
+    if not user:
+        user = "totals"
+    elif re.match(r"<@!\d{0,}>",user) and db.users.find({"uuid":user[3:-1]}):
+        embed.add_field(name = "Field 1", value = 1337, inline = False)
+        embed.add_field(name = "Field 2", value = "YOLO!")
+        embed.add_field(name = "Field 3", value = "Swag")
+    else:
+        embed.add_field(name = "ERROR", value = "Invalid User!")
+    
     await ctx.send(embed = embed)
 
 @bot.command(name = "pet")#sends random image of paul
