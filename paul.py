@@ -9,7 +9,7 @@ import time
 import pymongo
 import re
 
-version = "0.2pre1-dev"
+version = "0.2pre1"
 #TODO docstrigs
 #init
 #logging
@@ -55,22 +55,22 @@ async def info(ctx,user = ""):
     embed.set_thumbnail(url = "https://i.imgur.com/hPmQF6m.jpg")
     embed.set_author(name = "PaulBot",url = "https://github.com/TheJKL/PaulBot",icon_url = "https://i.imgur.com/hPmQF6m.jpg")
     embed.set_footer(text = f"paulBot v{version}", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png")
-    if (re.match(r"<@!\d{0,}>",user)):
+    if (re.match(r"<@!\d{0,}>",user)):#if user doesnt exist, create it
         createUser(int(user[3:-1]))
-    if (re.match(r"<@!\d{0,}>",user) and db.users.find({"uuid":int(user[3:-1])})):
+    if (re.match(r"<@!\d{0,}>",user) and db.users.find({"uuid":int(user[3:-1])})):#making sure user is in the db, regex ensures it is an actual user (could be tricked)
         embed.add_field(name = "user", value = f"{user}")
         user = int(user[3:-1])
         userDoc = db.users.find_one({"uuid":user})["totals"]
         embed.add_field(name = "food",value = int(db.users.find_one({"uuid":user})["food"]))
     else:
         embed.add_field(name = "No User", value = "Overall Totals")
-        for cat in imgChildDirs:
+        for cat in imgChildDirs:#iterates through each cat and adds their image total to the embed
             embed.add_field(name = f"{cat} Pics", value = getTotalImages(cat))
         user = "totals"
         userDoc = db.users.find_one({"uuid":user})["totals"]
 
     
-    for cmd,dic in userDoc.items():
+    for cmd,dic in userDoc.items():#iterates through commands and cats
         for cat,num in dic.items():
             embed.add_field(name = f"{cmd} {cat}", value = f"{num}")
     embed.add_field(name = "Report a Bug", value = "[Here](https://github.com/TheJKL/PaulBot/issues)", inline = False)
