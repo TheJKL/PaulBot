@@ -2,7 +2,7 @@
 .env
 Images/*
 config.yaml
-
+Testing/*
 #Python Specific Files
 # Byte-compiled / optimized / DLL files
 __pycache__/

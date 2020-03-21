@@ -51,19 +51,29 @@ async def meow(ctx):
 
 @bot.command(name = "info")#TODO Info command
 async def info(ctx,user = ""):
-    embed = discord.Embed(title = "Test", description = "A test embed that will eventually be used for statistics.", color = 0x672aff)
+    embed = discord.Embed(title = "Info!", description = "Disorganized stats for almost everything Paul! (and paul accessories)", color = 0x672aff)
     embed.set_thumbnail(url = "https://i.imgur.com/hPmQF6m.jpg")
     embed.set_author(name = "PaulBot",url = "https://github.com/TheJKL/PaulBot",icon_url = "https://i.imgur.com/hPmQF6m.jpg")
-    embed.set_footer(text = f"paulBot v{version} | https://github.com/TheJKL/PaulBot", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png")
-    if not user:
-        user = "totals"
-    elif re.match(r"<@!\d{0,}>",user) and db.users.find({"uuid":user[3:-1]}):
-        embed.add_field(name = "Field 1", value = 1337, inline = False)
-        embed.add_field(name = "Field 2", value = "YOLO!")
-        embed.add_field(name = "Field 3", value = "Swag")
+    embed.set_footer(text = f"paulBot v{version}", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png")
+    if (re.match(r"<@!\d{0,}>",user)):
+        createUser(int(user[3:-1]))
+    if (re.match(r"<@!\d{0,}>",user) and db.users.find({"uuid":int(user[3:-1])})):
+        embed.add_field(name = "user", value = f"{user}")
+        user = int(user[3:-1])
+        userDoc = db.users.find_one({"uuid":user})["totals"]
+        embed.add_field(name = "food",value = int(db.users.find_one({"uuid":user})["food"]))
     else:
-        embed.add_field(name = "ERROR", value = "Invalid User!")
+        embed.add_field(name = "No User", value = "Overall Totals")
+        for cat in imgChildDirs:
+            embed.add_field(name = f"{cat} Pics", value = getTotalImages(cat))
+        user = "totals"
+        userDoc = db.users.find_one({"uuid":user})["totals"]
+
     
+    for cmd,dic in userDoc.items():
+        for cat,num in dic.items():
+            embed.add_field(name = f"{cmd} {cat}", value = f"{num}")
+    embed.add_field(name = "Report a Bug", value = "[Here](https://github.com/TheJKL/PaulBot/issues)", inline = False)
     await ctx.send(embed = embed)
 
 @bot.command(name = "pet")#sends random image of paul
@@ -79,7 +89,7 @@ async def petCat(ctx, cat = "", numImg = 1):
     iterateCmd(ctx,"pet",cat)
 
 @bot.command(name = "petpetpet")#paul lottery command 
-async def petpetpet(ctx, numImg = 3, cat = ""):
+async def petpetpet(ctx, cat = "",  numImg = 3):
     createUser(ctx.author.id)
     if numImg > 10:#limit petpetpet images to 10 - 1 per command call
         numImg = 3
@@ -121,7 +131,7 @@ async def feed(ctx, cat = "", numFood = 1):
         else:
             await ctx.send(":regional_indicator_n: :regional_indicator_o: :regional_indicator_m:")
         
-        db.users.update_one({"uuid":"totals"},{"$inc":{f"food.{cat}":numFood}})#increment food fed to cats
+        db.users.update_one({"uuid":"totals"},{"$inc":{f"totals.food.{cat}":numFood}})#increment food fed to cats
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":-1*numFood}})#remove food from user
         db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.food.{cat}":numFood}})#track how much food a user has fed
     else:
@@ -138,11 +148,12 @@ def createUser(uuid):#creates a doc for a specified uuid
 
 async def sendImage(ctx,img,cat):#sends the specified image and iterates the totals for sent images
     await ctx.send(file = img)
-    db.users.update_one({"uuid":"totals"},{"$inc":{f"sentImg.{cat}":1}})
+    db.users.update_one({"uuid":"totals"},{"$inc":{f"totals.sentImg.{cat}":1}})
+    db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.sentImg.{cat}":1}})
 
 def iterateCmd(ctx,cmd,cat = defaultCat):#iterates the command in totals and for specific users
     db.users.update_one({"uuid":ctx.author.id},{"$inc":{f"totals.{cmd}.{cat}":1}})
-    db.users.update_one({"uuid":"totals"},{"$inc":{f"{cmd}.{cat}":1}})
+    db.users.update_one({"uuid":"totals"},{"$inc":{f"totals.{cmd}.{cat}":1}})
 
 def checkCat(cat):#checks if the cat is part of approved cats
     if cat.capitalize() not in imgChildDirs:
@@ -150,5 +161,9 @@ def checkCat(cat):#checks if the cat is part of approved cats
     else:
         cat = cat.capitalize()#returns standard cat if it is
     return cat
+
+def getTotalImages(cat):
+    """Returns the total number of images stored in a cats director"""
+    return len(os.listdir(f"{imgParentDir}/{checkCat(cat)}"))
 
 bot.run(token)
