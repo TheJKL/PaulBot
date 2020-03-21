@@ -10,16 +10,24 @@ Set to `!` by default but can be changed in config.
 Replies with a text message, the message is currently static however in future(sometime in v0.2) will be random from a list.
 
 ### Pet :
-Replies with a random image of Paul from the `./Images` folder
+Replies with a random image of Paul from the `./Images/[cat]` folder uses defaultCat setting if no cat is provided.
+
+*Usage:* `!pet [cat]`
 
 ### PetPetPet :
+Replies with `numImg` random images from a random pool of 15 images from `./Images/[cat]`.
 
+*Usage:* `!petpetpet [cat] [numImg]`
 
 ### Feed :
+Iterates a statistic of how much food a cat has been fed.
 
+*Usage:* `!feed [cat] [numFood]`
 
 ### Info :
+A disorganized collection of statistics for a user, if no user is given or the user is invalid it displays overall total statistics.
 
+*Usage:* `!info @[user]`
 
 ## Setup
 
@@ -34,6 +42,10 @@ Where [OAuth Token] is a discord bot’s OAuth token.
 - discord.py
 
 - python_dotenv
+
+- pymongo
+
+- yaml
 
 ### Config
 
