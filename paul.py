@@ -27,7 +27,6 @@ with open("config.yaml") as f:
 #config init
 imgParentDir = config["imageFolder"]
 imgChildDirs = config["imageSubfolders"]
-petpetpetDir = config["lotteryFolder"]
 dbAddr = config["databaseAddress"]
 bot = commands.Bot(command_prefix=config["commandPrefix"])
 defaultCat = config["defaultCat"]
