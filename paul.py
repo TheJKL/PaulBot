@@ -80,9 +80,9 @@ async def info(ctx,user = ""):
 async def petCat(ctx, cat = "", numImg = 1):
     createUser(ctx.author.id)
     logging.info("Pet Command")
-
+    numImg = int(numImg)
     cat = checkCat(cat)
-
+    db.users.update_one({"uuid":ctx.author.id},{"$inc":{"food":50*numImg}})#TEMP way of getting food
     imgs = os.listdir(f"{imgParentDir}/{cat}")#list of image files in the Paul folder
     img = discord.File(f"{imgParentDir}/{cat}/{random.choice(imgs)}")
     await sendImage(ctx,img,cat)
@@ -142,7 +142,7 @@ def createUser(uuid):#creates a doc for a specified uuid
     if not users.count_documents({"uuid":uuid}):#if the user exists a user wont be created
         users.insert_one({
             "uuid" : uuid,
-            "food" : 10,
+            "food" : 500,
             "totals" : {}
             })
 
