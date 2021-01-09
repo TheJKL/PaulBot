@@ -6,7 +6,6 @@ import logging
 import yaml
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 import time
 import pymongo
 import re
@@ -18,9 +17,6 @@ version = "0.2pre1"
 timestr = time.strftime("%Y%m%d-%H%M%S")
 logging.basicConfig(filename=f"Logs/debug-{timestr}.log",level=logging.DEBUG)
 logging.info("Log Start")
-#oauth
-load_dotenv()
-token = os.getenv('DISCORD_TOKEN')#load Oauth
 #config load
 if "config.yaml" not in os.listdir("./"):#check to see if a config file exists
     os.system("cp config.defaults config.yaml")#create config from template (if it doesnt exist)
@@ -32,6 +28,7 @@ imgChildDirs = config["imageSubfolders"]
 dbAddr = config["databaseAddress"]
 bot = commands.Bot(command_prefix=config["commandPrefix"])
 defaultCat = config["defaultCat"]
+token = config["discordToken"]
 #mongo init
 client = pymongo.MongoClient(f"mongodb://{dbAddr}/")
 db = client.paulDB

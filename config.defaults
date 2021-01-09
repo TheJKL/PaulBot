@@ -4,3 +4,4 @@ imageSubfolders:
   - Paul
 defaultCat: Paul
 databaseAddress: localhost
+discordToken:
