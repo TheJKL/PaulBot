@@ -31,6 +31,7 @@ defaultCat = config["defaultCat"]
 token = config["discordToken"]
 #mongo init
 client = pymongo.MongoClient(f"mongodb://{dbAddr}/")
+print(f"Connected to MongoDB at {dbAddr}")
 db = client.paulDB
 settings = db.settings
 users = db.users
